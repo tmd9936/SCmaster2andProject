@@ -1,10 +1,9 @@
 drop table group_user;
 
 create table group_user(
-    user_id varchar2(20) primary key
+    id varchar2(20) primary key
     ,password varchar2(20) not null
     ,name varchar(20) not null
-    ,cellphone varchar(20) unique
     ,location varchar(20) not null
     ,img varchar(50) default 'none'
     ,indate date default sysdate
@@ -68,3 +67,19 @@ create table group_reply(
 );
 
 create sequence group_reply_seq start with 1 increment by 1;
+
+insert into group_user(id,password,name,location)
+values('admin','admin','백승환','인천');
+
+select 
+  		id
+  		,password
+  		,name
+  		,location
+  		,img
+  		,indate
+  	from 
+  		group_user
+  	where 
+  		id = 'admin';
+
