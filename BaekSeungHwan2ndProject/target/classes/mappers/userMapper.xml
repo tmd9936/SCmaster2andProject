@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.seung.web1.user.dao.UserMapper">
+  <select id="idSearch" resultType="user">
+  	select 
+  		id
+  		,password
+  		,name
+  		,location
+  		,img
+  		,indate
+  	from 
+  		group_user
+  	where 
+  		#{id} = id
+  </select>
+  
+  <insert id="insertUser" parameterType="user">
+	insert into 
+		group_user(
+			id
+			,password
+			,name
+			,location	
+		)values(
+			#{id}
+			,#{password}
+			,#{name}
+			,#{location}
+		)
+  </insert>
+  
+  </mapper>

@@ -1,0 +1,70 @@
+drop table group_user;
+
+create table group_user(
+    user_id varchar2(20) primary key
+    ,password varchar2(20) not null
+    ,name varchar(20) not null
+    ,cellphone varchar(20) unique
+    ,location varchar(20) not null
+    ,img varchar(50) default 'none'
+    ,indate date default sysdate
+);
+
+
+
+create table group_tb(
+    groupnum NUMBER primary key
+    ,name varchar(30) unique
+    ,master varchar(20) not null
+    ,x_pos number
+    ,y_pos number
+    ,introduce varchar(200) not null
+    ,subject varchar(20) not null
+);
+
+create sequence group_tb_seq start with 1 increment by 1;
+
+create table group_in_user(
+    groupnum NUMBER primary key
+    ,username varchar(20) not null
+    ,constraint groupnum_fk foreign key(groupnum) 
+		references group_tb(groupnum) on delete cascade
+);
+
+create table group_location(
+    groupnum NUMBER primary key
+    ,x_pos number not null
+    ,y_pos number not null
+    ,name varchar(30) not null
+    ,constraint location_fk foreign key(groupnum) 
+		references group_tb(groupnum) on delete cascade
+);
+
+drop table group_board;
+
+create table group_board(
+    boardnum number primary key
+    ,id varchar(20) not null
+    ,title varchar(100) not null
+    ,content varchar(2000) not null
+    ,inputdate date default sysdate
+    ,hits number default 0
+    ,originalfile varchar2(200)
+    ,savedfile varchar2(100)
+);
+
+
+
+create sequence group_board_seq start with 1 increment by 1;
+
+create table group_reply(
+    replynum		number	primary key,		--리플번호
+	boardnum		number not null,			--본문 글번호
+	id				varchar2(20) not null,		--작성자 ID
+	text			varchar2(200) not null,		--리플내용
+	inputdate		date 	default sysdate,	--작성날짜
+	constraint group_reply_fk foreign key(boardnum) 
+		references group_board(boardnum) on delete cascade
+);
+
+create sequence group_reply_seq start with 1 increment by 1;
