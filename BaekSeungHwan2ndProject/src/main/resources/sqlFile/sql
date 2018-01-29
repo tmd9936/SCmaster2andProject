@@ -1,32 +1,33 @@
 drop table group_user;
 
 create table group_user(
-    user_id varchar2(20) primary key
+    id varchar2(20) primary key
     ,password varchar2(20) not null
     ,name varchar(20) not null
-    ,cellphone varchar(20) unique
     ,location varchar(20) not null
     ,img varchar(50) default 'none'
     ,indate date default sysdate
 );
 
 
+drop table group_tb;
 
 create table group_tb(
     groupnum NUMBER primary key
     ,name varchar(30) unique
     ,master varchar(20) not null
-    ,x_pos number
-    ,y_pos number
     ,introduce varchar(200) not null
     ,subject varchar(20) not null
+    ,img varchar(20) default 'none'
 );
 
 create sequence group_tb_seq start with 1 increment by 1;
 
+drop table group_in_user;
+
 create table group_in_user(
     groupnum NUMBER primary key
-    ,username varchar(20) not null
+    ,userid varchar(20) not null
     ,constraint groupnum_fk foreign key(groupnum) 
 		references group_tb(groupnum) on delete cascade
 );
@@ -39,11 +40,13 @@ create table group_location(
     ,constraint location_fk foreign key(groupnum) 
 		references group_tb(groupnum) on delete cascade
 );
-
+drop table group_reply;
 drop table group_board;
+
 
 create table group_board(
     boardnum number primary key
+    ,groupnum number not null
     ,id varchar(20) not null
     ,title varchar(100) not null
     ,content varchar(2000) not null
@@ -51,6 +54,8 @@ create table group_board(
     ,hits number default 0
     ,originalfile varchar2(200)
     ,savedfile varchar2(100)
+    ,constraint group_board_fk foreign key(groupnum) 
+		references group_tb(groupnum) on delete cascade
 );
 
 
@@ -68,3 +73,30 @@ create table group_reply(
 );
 
 create sequence group_reply_seq start with 1 increment by 1;
+
+insert into group_user(id,password,name,location)
+values('admin','admin','백승환','인천');
+
+select 
+  		id
+  		,password
+  		,name
+  		,location
+  		,img
+  		,indate
+  	from 
+  		group_user
+  	where 
+  		id = 'admin';
+
+select 
+    gr.groupnum
+    ,gr.name
+    ,gr.MASTER
+    ,gr.INTRODUCE
+    ,gr.SUBJECT
+    ,gr.IMG
+from 
+    group_tb gr, group_in_user giu
+where 
+    giu.USERID = 'aa' and gr.GROUPNUM = giu.GROUPNUM; 

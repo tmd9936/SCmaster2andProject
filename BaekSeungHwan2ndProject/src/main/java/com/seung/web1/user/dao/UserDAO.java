@@ -33,9 +33,23 @@ public class UserDAO {
 		try {
 			result = mapper.insertUser(user);
 		} catch (Exception e) {
-			e.getStackTrace();
+			e.printStackTrace();
 			// TODO: handle exception
 		}
+		return result;
+	}
+	
+	public int updateUser(User user) {
+		UserMapper mapper = session.getMapper(UserMapper.class);
+		
+		int result = 0;
+		try {
+			result = mapper.updateUser(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
 		return result;
 	}
 }

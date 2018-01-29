@@ -61,4 +61,17 @@ public class UserLoginRestController {
 		logger.info("로그인 종료");
 		return "redirect:/";
 	}
+	
+	@RequestMapping(value="logout", method=RequestMethod.GET)
+	public String logout(HttpSession session) {
+		logger.info("로그아웃 시작");
+		session.setAttribute("id", null);
+		session.setAttribute("name", null);
+		session.setAttribute("img", null);
+		
+		logger.info("로그아웃 종료");
+		return "redirect:/";
+	}
+	
+	
 }

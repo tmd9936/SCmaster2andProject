@@ -33,4 +33,15 @@
 		)
   </insert>
   
+  <update id="updateUser" parameterType="user">
+  	update group_user
+  	set
+  		password = #{password}
+  		,name = #{name}
+  		,location = #{location}
+  		,img = #{img}
+  	where 
+  		id = #{id}
+  </update>
+  
   </mapper>

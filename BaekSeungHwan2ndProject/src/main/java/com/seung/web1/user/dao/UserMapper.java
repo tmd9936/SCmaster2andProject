@@ -8,4 +8,7 @@ public interface UserMapper {
 	
 	//유저 등록 <insert id="insertUser" parameterType="user">
 	public int insertUser(User user);
+	
+	//유저 업데이트 <update id="updateUser" parameterType="user">
+	public int updateUser(User user);
 }

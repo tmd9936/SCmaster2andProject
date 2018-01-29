@@ -17,11 +17,22 @@
 	{
 	padding-right: 0;
 }
+a{
+	text-decoration: none;
+}
 </style>
+<script type="text/javascript">
+	$(function(){
+		$('#infoBtn').on('click',function(){
+			location.href = '/web1/user/infoForm';
+		});
+	});
+
+</script>
 <title>[ TOP ]</title>
 </head>
 <body>
-	<div >
+	<div>
 		<header class="mdl-layout__header">
 			<!-- Top row, always visible -->
 			<div class="mdl-layout__header-row">
@@ -36,10 +47,32 @@
 					<div class="mdl-layout-spacer"></div>
 					<!-- Navigation -->
 					<nav class="mdl-navigation mdl-layout--large-screen-only">
-						<a class="mdl-navigation__link" href="/web1/user/loginForm"><b>로그인</b></a> <a
-							class="mdl-navigation__link" href="/web1/user/userJoin"><b>회원가입</b></a> <a
-							class="mdl-navigation__link" href="">Link</a> <a
-							class="mdl-navigation__link" href="">Link</a>
+					
+						<c:choose>
+							<c:when test="${sessionScope.id == null }">
+								<a class="mdl-navigation__link" href="/web1/user/loginForm"><b>로그인</b></a> 
+								<a class="mdl-navigation__link" href="/web1/user/userJoin"><b>회원가입</b></a> 					
+							</c:when>
+							<c:otherwise>
+								<a class="mdl-navigation__link" href="/web1/user/logout">로그아웃</a> 
+								<span class="mdl-chip mdl-chip--contact mdl-chip--deletable">
+									<c:choose>
+										<c:when test="${SessionScope.img eq 'none' }" >
+										 <button id="infoBtn" class="mdl-chip demo-chip">
+		    								<img class="mdl-chip__contact" src="<c:url value="/resources/img/human.png"></c:url>">
+										   	<span class="mdl-chip__text">${sessionScope.name }</span>
+										 </button>
+										</c:when>
+										<c:otherwise>
+										 	<button id="infoBtn" class="mdl-chip demo-chip">
+		    									<img class="mdl-chip__contact" src="/web1/user/download">
+										   		<span class="mdl-chip__text">${sessionScope.name }</span>
+										 	</button>
+										</c:otherwise>
+									</c:choose>
+								</span>		
+							</c:otherwise>
+						</c:choose>
 					</nav>
 				</div>
 				<div

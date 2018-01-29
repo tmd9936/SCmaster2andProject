@@ -5,6 +5,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet"
+	href="https://code.getmdl.io/1.3.0/material.cyan-blue.min.css" />
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/jquery-3.2.1.js"></c:url>"></script>
 <title>[ 메인화면 ]</title>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery-3.2.1.js"></c:url>"></script>
@@ -15,11 +22,11 @@
 	width: 100%;
 }
 </style>
-<script type="text/javascript">
-	
-</script>
 </head>
 <body>
+
+	
+	
 	<div class="topMenu">
 		<jsp:include page="topMenu.jsp"></jsp:include>
 	</div>
