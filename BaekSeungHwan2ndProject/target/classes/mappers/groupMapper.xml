@@ -29,10 +29,10 @@
 		insert into
 			group_in_user(
 			groupnum
-			,userid
+			,id
 		)values(
 			#{groupnum}
-			,#{userid}
+			,#{id}
 		)
 	</insert>
 
@@ -47,17 +47,60 @@
 		from
 			group_tb gr, group_in_user giu
 		where
-			giu.USERID = #{id} and
+			giu.ID = #{id} and
 			gr.GROUPNUM = giu.GROUPNUM
 
 	</select>
 	
 	<select id="selectGroupOne" resultType="group">
-		select *
+		select 
+			groupnum
+			,name
+			,master
+			,introduce
+			,subject
+			,img
+			,(
+				select count(*)
+				from
+					group_in_user 
+				where
+					groupnum = #{groupnum}
+			) membercount 
 		from 
-			group_tb
+			group_tb 
 		where
 			groupnum = #{groupnum}
+	</select>
+	
+	<select id="groupInUserList" resultType="user">
+		select 
+			id
+		from
+			group_in_user
+		where
+			groupnum = #{groupnum}
+	</select>
+	
+	<select id="searchBySubject" resultType="group" parameterType="string">
+		select 
+			gt.groupnum
+			,gt.name
+			,gt.master
+			,gt.introduce
+			,gt.subject
+			,gt.img
+			,(
+				select count(*)
+				from
+					group_in_user giu
+				where
+					giu.groupnum = gt.groupnum
+			) membercount 
+		from 
+			group_tb gt
+		where
+			gt.subject = #{subject}
 	</select>
 
 </mapper>

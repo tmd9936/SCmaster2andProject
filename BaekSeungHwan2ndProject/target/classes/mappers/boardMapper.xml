@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+  <mapper namespace="com.seung.web1.board.dao.BoardMapper">
+  	<insert id="insertBoard" parameterType="board">
+  		insert into group_board
+  		(
+  			boardnum
+  			,groupnum
+  			,id
+  			,content
+  			<if test="originalfile !=null and savedfile != null">
+  				,originalfile
+  				,savedfile
+  			</if>
+  		)values(
+  			group_board_seq.nextval
+  			,#{groupnum}
+  			,#{id}
+  			,#{content}
+			<if test="originalfile !=null and savedfile != null">
+  				,#{originalfile}
+  				,#{savedfile}
+  			</if>
+  		)
+  	</insert>
+  	
+  	<select id="boardList" resultType="board">
+  		select
+  			boardnum
+  			,groupnum
+  			,id
+  			,content
+  			,inputdate
+  			,originalfile
+  			,savedfile
+  		from
+  			group_board
+  		where
+  			groupnum = #{groupnum}
+  			
+  	</select>
+  	
+  	<select id="selectBoard" resultType="board">
+  		select 
+  			*
+  		from 
+  			group_board
+  		where
+  			boardnum = #{boardnum}
+  		
+  	</select>
+  	
+  	<delete id="deleteBoard" parameterType="int">
+  		delete from 
+  			group_board
+  		where
+  			boardnum = #{boardnum}
+  	</delete>
+  	
+  </mapper>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

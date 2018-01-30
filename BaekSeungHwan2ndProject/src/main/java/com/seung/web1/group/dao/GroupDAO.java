@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seung.web1.group.vo.Group;
+import com.seung.web1.group.vo.GroupInUser;
+import com.seung.web1.user.vo.User;
 
 @Repository
 public class GroupDAO {
@@ -70,6 +72,36 @@ public class GroupDAO {
 			// TODO: handle exception
 		}
 		return group;
+	}
+	
+	public ArrayList<User> groupInUserList(int groupnum){
+		GroupMapper mapper = session.getMapper(GroupMapper.class);
+		
+		ArrayList<User> list = null;
+		
+		try {
+			list = mapper.groupInUserList(groupnum);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+		return list;
+	}
+	
+	public ArrayList<Group> searchBySubject(String subject){
+		GroupMapper mapper = session.getMapper(GroupMapper.class);
+		
+		ArrayList<Group> list = null;
+		
+		try {
+			list = mapper.searchBySubject(subject);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+		return list;
 	}
 }
 

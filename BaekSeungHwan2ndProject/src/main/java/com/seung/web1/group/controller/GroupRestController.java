@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,8 @@ public class GroupRestController {
 	
 	@Autowired
 	GroupDAO dao;
+	
+	
 	private static final Logger logger = LoggerFactory.getLogger(GroupRestController.class);
 	
 	final String uploadPath = "/groupImg";
@@ -33,11 +36,11 @@ public class GroupRestController {
 		logger.info("그룹 생성 시작");
 		System.out.println(dao.insertGroup(group));
 		int groupnum = group.getGroupnum();
-		String userid = (String)session.getAttribute("id");
+		String id = (String)session.getAttribute("id");
 		HashMap<String, Object> map = new HashMap<>();
 		
 		map.put("groupnum", groupnum);
-		map.put("userid", userid);
+		map.put("id", id);
 		
 		System.out.println(dao.groupAddUser(map));
 		
@@ -51,10 +54,34 @@ public class GroupRestController {
 		String id = (String)session.getAttribute("id");
 		
 		ArrayList<Group> list = dao.myGroupList(id);
-		
+		 
 		logger.info("내가 가입한 그룹 가져오기 종료");
 		return list;
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="searchBySubject", method=RequestMethod.GET)
+	public ArrayList<Group> searchBySubject(String subject){
+		logger.info("주제별 찾아오기 시작");
+		
+		ArrayList<Group> list = dao.searchBySubject(subject);
+		
+		logger.info("주제별 찾아오기 종료");
+		return list;
+	}
 	
+	@RequestMapping(value="groupAddUser", method=RequestMethod.GET)
+	public String groupAddUser(int groupnum, HttpSession session,Model model) {
+		logger.info("그룹 가입 시작");
+		String id = (String)session.getAttribute("id");
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("groupnum", groupnum);
+		map.put("id", id);
+	
+		System.out.println(dao.groupAddUser(map));
+		
+		model.addAttribute("groupnum", groupnum);
+		logger.info("그룹 가입 종료");
+		return "redirect:groupForm";
+	}
 }

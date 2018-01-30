@@ -57,7 +57,7 @@ a{
 								<a class="mdl-navigation__link" href="/web1/user/logout">로그아웃</a> 
 								<span class="mdl-chip mdl-chip--contact mdl-chip--deletable">
 									<c:choose>
-										<c:when test="${SessionScope.img eq 'none' }" >
+										<c:when test="${sessionScope.img eq 'none' }" >
 										 <button id="infoBtn" class="mdl-chip demo-chip">
 		    								<img class="mdl-chip__contact" src="<c:url value="/resources/img/human.png"></c:url>">
 										   	<span class="mdl-chip__text">${sessionScope.name }</span>

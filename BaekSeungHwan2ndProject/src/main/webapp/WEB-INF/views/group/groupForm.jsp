@@ -18,6 +18,7 @@
 	height: 64px;
 	width: 100%;
 	position: fixed;
+	z-index: 99;
 }
 
 #sidebanner {
@@ -59,27 +60,67 @@
 }
 
 .demo-card-wide.mdl-card {
-	width: 65%;
+	width: 60%;
 	height: 15%;
 }
 
 .demo-card-wide>.mdl-card__title {
 	color: #000;
-	height: 100px;
-	
+	height: 90%;
 }
 
 .demo-card-wide>.mdl-card__menu {
 	color: #fff;
 }
-.mainDiv{
+
+.mainDiv {
 	margin-left: 30%;
 	padding-top: 80px;
+	width: 90%;
+	
+}
+
+.btnText {
+	color: white;
+	font-weight: bold;
+	font-size: large;
+}
+
+#sidebanner button {
+	width: 80%;
+	height: 7%;
+}
+
+#writeCard {
+	min-height: 100px;
+	height: 10%
+}
+
+.boardDiv {
+	width: 70%;
 }
 
 </style>
 <script type="text/javascript">
-	
+	$(function() {
+		$('#joinGroup').on('click', function() {
+			if (confirm('가입하시겠습니까?')) {
+				location.href = 'groupAddUser?groupnum=' + $
+				{
+					group.groupnum
+				}
+				;
+			}
+		});
+		
+		$('.mdl-menu__item').on('click',function(){
+			var type = $(this).attr('type');
+			var boardnum = $(this).attr('boardnum');
+			
+			location.href = '../board/delete?boardnum='+boardnum+'&groupnum='+${group.groupnum};
+		});
+		
+	});
 </script>
 </head>
 <body>
@@ -99,36 +140,107 @@
 					class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
 					${group.name} </a>
 			</div>
+			<p>멤버 : ${group.membercount }
 		</div>
 		<hr>
 		<c:if test="${sessionScope.id == group.master }">
 			<p>그룹 설정 바꾸기2</p>
 			<br>
 		</c:if>
+		<c:choose>
+			<c:when test="${member eq 'memberYes' }">
+				<button
+					class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+					<span class="btnText">그룹 탈퇴</span>
+				</button>
+			</c:when>
+			<c:when test="${member eq 'memberNo' }">
+				<button
+					class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+					id="joinGroup">
+					<span class="btnText">그룹 가입</span>
+				</button>
+			</c:when>
+			<c:otherwise>
+				<p>로그인 하세요!</p>
+			</c:otherwise>
+		</c:choose>
+
 	</div>
 	<!-- 사이드바 end -->
 
 	<div id="mainDiv" class="mainDiv">
-		<div id="writeDiv">
-			<div class="demo-card-wide mdl-card mdl-shadow--2dp">
-				<div class="mdl-card__title">
-					<h2 class="mdl-card__title-text">멤버들에게 전할 소식을 남겨주세요!</h2>
+		<c:choose>
+			<c:when test="${member eq 'unknown' }">
+				<h1>로그인 하세요!</h1>
+			</c:when>
+			<c:otherwise>
+				<c:if test="${member eq 'memberYes'}">
+					<div id="writeDiv" class="writeDiv">
+						<div class="demo-card-wide mdl-card mdl-shadow--2dp"
+							id="writeCard" class="writeCard">
+
+							<div class="mdl-card__supporting-text">
+								<p>멤버들에게 전할 소식을 남겨주세요!</p>
+							</div>
+							<div class="mdl-card__actions mdl-card--border">
+								<jsp:include page="../board/boardForm.jsp"></jsp:include>
+							</div>
+							<div class="mdl-card__menu">
+								<button
+									class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+									<i class="material-icons">share</i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</c:if>
+				<br>
+				<div id="boardDiv">
+					<c:forEach items="${boardList }" var="board">
+						<div class="writeDiv">
+							<div class="demo-card-wide mdl-card mdl-shadow--2dp"
+								class="writeCard">
+
+								<div class="mdl-card__supporting-text">
+									<p>ID ${board.id }</p>
+									<c:if test="${board.savedfile !=null }">
+										<img alt="" src="../board/download?boardnum=${board.boardnum }">
+									</c:if> 
+									<pre>${board.content }</pre>
+								</div>
+								<div class="mdl-card__actions mdl-card--border">
+									<h5>댓글</h5>
+								</div>
+								<div class="mdl-card__menu">
+									<button id="${board.boardnum }"
+										class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+										<i class="material-icons">more_vert</i>
+									</button>
+
+									<ul
+										class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+										for="${board.boardnum }">
+										<c:choose>
+											<c:when test="${sessionScope.id eq board.id }">
+												<li class="mdl-menu__item" type="update" boardnum="${board.boardnum }">수정</li>
+												<li class="mdl-menu__item" type="delete" boardnum="${board.boardnum }">삭제</li>
+											</c:when>
+											<c:otherwise>
+												<li disabled class="mdl-menu__item">수정</li>
+												<li disabled class="mdl-menu__item">삭제</li>
+											</c:otherwise>
+										</c:choose>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<br><br>
+					</c:forEach>
 				</div>
-				<div class="mdl-card__supporting-text">^^</div>
-				<div class="mdl-card__actions mdl-card--border">
-					<a
-						class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-						글쓰기 </a>
-				</div>
-				<div class="mdl-card__menu">
-					<button
-						class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-						<i class="material-icons">share</i>
-					</button>
-				</div>
-			</div>
-		</div>
-		<div id="baordDiv"></div>
+			</c:otherwise>
+		</c:choose>
+
 	</div>
 	<!-- mainDivend -->
 

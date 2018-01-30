@@ -7,12 +7,14 @@ public class Group {
 	private String introduce;
 	private String subject;
 	private String img;
+	private int membercount;
 	
 	public Group() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Group(int groupnum, String name, String master, String introduce, String subject, String img) {
+	public Group(int groupnum, String name, String master, String introduce, String subject, String img,
+			int membercount) {
 		super();
 		this.groupnum = groupnum;
 		this.name = name;
@@ -20,6 +22,7 @@ public class Group {
 		this.introduce = introduce;
 		this.subject = subject;
 		this.img = img;
+		this.membercount = membercount;
 	}
 
 	public int getGroupnum() {
@@ -70,10 +73,18 @@ public class Group {
 		this.img = img;
 	}
 
+	public int getMembercount() {
+		return membercount;
+	}
+
+	public void setMembercount(int membercount) {
+		this.membercount = membercount;
+	}
+
 	@Override
 	public String toString() {
 		return "Group [groupnum=" + groupnum + ", name=" + name + ", master=" + master + ", introduce=" + introduce
-				+ ", subject=" + subject + ", img=" + img + "]";
+				+ ", subject=" + subject + ", img=" + img + ", membercount=" + membercount + "]";
 	}
 	
 	

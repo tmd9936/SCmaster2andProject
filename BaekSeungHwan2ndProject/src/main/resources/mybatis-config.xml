@@ -7,12 +7,15 @@
 	<typeAliases>
 		<typeAlias type="com.seung.web1.user.vo.User" alias="user" />	
 		<typeAlias type="com.seung.web1.group.vo.Group" alias="group"/>
+		<typeAlias type="com.seung.web1.group.vo.GroupInUser" alias="giu"/>
+		<typeAlias type="com.seung.web1.board.vo.Board" alias="board"/>
 	</typeAliases>
 
 	
 	<mappers>
 		<mapper resource="mappers/userMapper.xml"/>
 		<mapper resource="mappers/groupMapper.xml"/>
+		<mapper resource="mappers/boardMapper.xml"/>
 	</mappers>
 	 
 </configuration>
