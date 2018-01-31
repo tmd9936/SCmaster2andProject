@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.seung.web1.board.dao.BoardDAO;
 import com.seung.web1.board.vo.Board;
+import com.seung.web1.board.vo.Reply;
 import com.seung.web1.common.util.FileService;
 
 @Controller
@@ -117,12 +119,73 @@ public class BoardRestController {
 	}
 	
 	@RequestMapping(value="delete", method=RequestMethod.GET)
-	public String deleteBoard(Model model,int boardnum,int groupnum) {
+	public String deleteBoard(Model model,int boardnum,int groupnum,HttpSession session) {
 		logger.info("보드 지우기 시작");
-		System.out.println(dao.deleteBoard(boardnum));
+		String id = (String)session.getAttribute("id");
+		Board board = new Board();
+		board.setBoardnum(boardnum);
+		board.setId(id);
+		System.out.println(dao.deleteBoard(board));
 		
-		logger.info("보드 지우기 종룡");
+		model.addAttribute("groupnum", groupnum);
+		logger.info("보드 지우기 종료");
 		return "redirect:../group/groupForm";
+	}
+	
+	@RequestMapping(value="update", method=RequestMethod.POST)
+	public String update(Model model, MultipartFile upload, Board aftboard) {
+		logger.info("보드 수정 시작");
+		Board preboard = dao.selectBoard(aftboard.getBoardnum());
+		if((preboard.getOriginalfile() !=null && preboard.getSavedfile() !=null)) {
+			if(!upload.isEmpty()) {
+				String fullpath = uploadPath+"/"+preboard.getSavedfile();
+				FileService.deleteFile(fullpath);
+				this.uploadFile(upload, aftboard);
+			}
+		}else{
+			this.uploadFile(upload, aftboard);
+		}
+		
+		model.addAttribute("groupnum", preboard.getGroupnum());
+		System.out.println(dao.updateBoard(aftboard));
+		logger.info("보드 수정 종료");
+		return "redirect:../group/groupForm";
+	}
+	
+	@RequestMapping(value="insertReply", method=RequestMethod.POST)
+	public String insertReply(Model model,Reply reply,int groupnum) {
+		logger.info("리플 입력 시작");
+		System.out.println(dao.insertReply(reply));
+		
+		model.addAttribute("groupnum",groupnum);
+		logger.info("리플 입력 종료");
+		return "redirect:../group/groupForm";
+	}
+	
+	@RequestMapping(value="deleteReply", method=RequestMethod.GET)
+	public String deleteReply(Model model,HttpSession session, Reply reply,int groupnum) {
+		logger.info("리플 삭제 시작");
+		String id = (String)session.getAttribute("id");
+		reply.setId(id);
+		System.out.println(dao.deleteReply(reply));
+		
+		model.addAttribute("groupnum", groupnum);
+		logger.info("리플 삭제 종료");
+		return "redirect:../group/groupForm";
+	}
+	
+	
+	@RequestMapping(value="updateReply",method=RequestMethod.POST)
+	public String updateReply(Model model,HttpSession session, Reply reply,int groupnum) {
+		logger.info("리플 업데이트 시작");
+		String id = (String)session.getAttribute("id");
+		reply.setId(id);
+		System.out.println(dao.updateReply(reply));
+		
+		model.addAttribute("groupnum", groupnum);
+		logger.info("리플 업데이트 종료"); 
+		return "redirect:../group/groupForm";
+		
 	}
 	
 	public void uploadFile(MultipartFile upload,Board board){
@@ -134,7 +197,6 @@ public class BoardRestController {
 			board.setSavedfile(savedfile);
 		}
 	}
-	
 	
 }
 

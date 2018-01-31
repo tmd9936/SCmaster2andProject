@@ -9,6 +9,7 @@
 		<typeAlias type="com.seung.web1.group.vo.Group" alias="group"/>
 		<typeAlias type="com.seung.web1.group.vo.GroupInUser" alias="giu"/>
 		<typeAlias type="com.seung.web1.board.vo.Board" alias="board"/>
+		<typeAlias type="com.seung.web1.board.vo.Reply" alias="reply"/>
 	</typeAliases>
 
 	

@@ -1,6 +1,8 @@
 package com.seung.web1.group.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -49,10 +51,17 @@ public class GroupViewController {
 			}	
 		}
 		
+		int boardLength = 0;
+		List<HashMap<String, Object>> boardList =  boardDAO.boardList(groupnum);
+		if(boardList.size() <4) {
+			boardLength = boardList.size();
+		}else {
+			boardLength = 4;
+		}
+		List<HashMap<String, Object>> boardList2 = boardList.subList(0, boardLength);
 		
-		ArrayList<Board> boardList =  boardDAO.boardList(groupnum);
-		model.addAttribute("boardList", boardList);
-		
+		//System.out.println(boardList);
+		model.addAttribute("boardList", boardList2);	
 		model.addAttribute("member", member);
 		model.addAttribute("group", group);
 		logger.info("그룹 폼 종료");

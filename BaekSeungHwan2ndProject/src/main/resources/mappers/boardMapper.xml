@@ -27,8 +27,64 @@
   		)
   	</insert>
   	
-  	<select id="boardList" resultType="board">
+  	<resultMap type="hashmap" id="boardMap">
+  		<id property="boardnum" column="boardnum"/>
+  		<result property="groupnum" column="groupnum"/>
+  		<result property="id" column="id"/>
+  		<result property="content" column="content"/>
+  		<result property="inputdate" column="inputdate"/>
+  		<result property="originalfile" column="originalfile"/>
+  		<result property="savedfile" column="savedfile"/>
+  		<collection property="replyList" javaType="java.util.ArrayList" resultMap="replyMap"></collection>
+  	</resultMap>
+  	
+  	<resultMap type="hashmap" id="replyMap">
+  		<id property="replynum" column="replynum"/>
+  		<result property="boardnum" column="gr_boardnum"/>
+  		<result property="id" column="gr_id"/>
+  		<result property="text" column="text"/>
+  		<result property="inputdate" column="gr_inputdate"/>
+  	</resultMap>
+  	
+  	<select id="getReplyListById" resultType="reply">
   		select
+  			replynum
+  			,boardnum
+  			,id
+  			,text
+  			,inputdate
+  		from
+  			group_reply
+  		where
+  			boardnum = #{boardnum}	
+  	</select>
+  	
+  	
+  	<select id="boardList" resultMap="boardMap">
+  		select
+  			gb.boardnum
+  			,gb.groupnum
+  			,gb.id
+  			,gb.content
+  			,to_char(gb.inputdate,'yyyy-MM-dd') inputdate
+  			,gb.originalfile
+  			,gb.savedfile
+  			,gr.replynum 
+  			,gr.boardnum gr_boardnum
+  			,gr.id gr_id
+  			,gr.text 
+  			,to_char(gr.inputdate,'yyyy-MM-dd') gr_inputdate
+  		from
+  			group_board gb, group_reply gr
+  		where
+  			gb.groupnum = #{groupnum}
+  		order by 
+  			gb.inputdate desc
+  			
+  	</select>
+  	
+  	<select id="selectBoard" resultType="board">
+  		select 
   			boardnum
   			,groupnum
   			,id
@@ -36,16 +92,6 @@
   			,inputdate
   			,originalfile
   			,savedfile
-  		from
-  			group_board
-  		where
-  			groupnum = #{groupnum}
-  			
-  	</select>
-  	
-  	<select id="selectBoard" resultType="board">
-  		select 
-  			*
   		from 
   			group_board
   		where
@@ -53,12 +99,55 @@
   		
   	</select>
   	
-  	<delete id="deleteBoard" parameterType="int">
+  	<delete id="deleteBoard" parameterType="board">
   		delete from 
   			group_board
   		where
   			boardnum = #{boardnum}
+  			and id = #{id}
   	</delete>
+  	
+  	<update id="updateBoard" parameterType="board">
+  		update group_board
+  		set
+  			content = #{content}
+  			<if test="originalfile != null and savedfile != null">
+  				,originalfile = #{originalfile}
+  				,savedfile = #{savedfile}
+  			</if>
+  		where
+  			boardnum = #{boardnum} and id = #{id}
+  	</update>
+  	
+  	<insert id="insertReply" parameterType="reply">
+  		insert into 
+  		group_reply(
+  			replynum
+  			,boardnum
+  			,id
+  			,text
+  		)values(
+  			group_reply_seq.nextval
+  			,#{boardnum}
+  			,#{id}
+  			,#{text}
+  		)
+  	</insert>
+  	
+  	<delete id="deleteReply" parameterType="reply">
+  		delete from 
+  			group_reply
+  		where
+  			replynum = #{replynum} and id = #{id}
+  	</delete>
+  	
+  	<update id="updateReply" parameterType="reply">
+  		update group_reply
+  		set
+  			text = #{text}
+  		where
+  			replynum = #{replynum} and id = #{id}
+  	</update>
   	
   </mapper>
   

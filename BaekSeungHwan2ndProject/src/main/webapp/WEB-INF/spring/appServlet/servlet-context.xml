@@ -3,6 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
@@ -23,6 +24,28 @@
 	
 	<context:component-scan base-package="com.seung.web1" />
 	
+	<!-- 인터셉터 등록 -->
+	<beans:bean id="LoginInterceptor" class="com.seung.web1.interceptor.LoginInterceptor"></beans:bean>
 	
+	<mvc:interceptors>
+		<mvc:interceptor>
+		<mvc:mapping path="/user/logout"/>
+		<mvc:mapping path="/user/insertUser"/>
+		<mvc:mapping path="/user/infoForm"/>
+		<mvc:mapping path="/user/update"/>
+		<mvc:mapping path="/group/make"/>
+		<mvc:mapping path="/group/myGroupList"/>
+		<mvc:mapping path="/group/groupAddUser"/>
+		<mvc:mapping path="/board/updateForm"/>
+		<mvc:mapping path="/board/insertBoard"/>
+		<mvc:mapping path="/board/delete"/>
+		<mvc:mapping path="/board/update"/>
+		<mvc:mapping path="/board/insertReply"/>
+		<mvc:mapping path="/board/deleteReply"/>
+		<mvc:mapping path="/board/updateReply"/>
+		<beans:ref bean="LoginInterceptor"/>
+		
+		</mvc:interceptor>
+	</mvc:interceptors>
 	
 </beans:beans>

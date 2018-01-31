@@ -36,7 +36,7 @@ textarea {
 </style>
 <script type="text/javascript">
 	$(function() {
-		var dialog = document.querySelector('dialog');
+		var dialog = document.querySelector('#writeDial');
 		var showDialogButton = document.querySelector('#show-dialog');
 		if (!dialog.showModal) {
 			dialogPolyfill.registerDialog(dialog);
@@ -91,6 +91,10 @@ textarea {
 			
 		});
 		
+		$('#closeBtn').on('click',function(){
+			$('#upload').val('');
+			$('#content').val('');
+		})
 	});
 </script>
 </head>
@@ -98,7 +102,7 @@ textarea {
 	<button id="show-dialog" type="button" class="mdl-button">
 		<span class="writeText">글쓰기</span>
 	</button>
-	<dialog class="mdl-dialog">
+	<dialog class="mdl-dialog" id="writeDial">
 	<form action="../board/insertBoard" method="post" enctype="multipart/form-data">
 		<h4 class="mdl-dialog__title">글쓰기</h4>
 		<div class="mdl-dialog__content">

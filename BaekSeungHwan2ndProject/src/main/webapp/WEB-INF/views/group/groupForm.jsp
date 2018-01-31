@@ -21,6 +21,7 @@
 	z-index: 99;
 }
 
+
 #sidebanner {
 	position: fixed;
 	margin-right: 500px;
@@ -95,11 +96,20 @@
 	min-height: 100px;
 	height: 10%
 }
-
-.boardDiv {
-	width: 70%;
+body{
+	overflow-x : hidden;
+	overflow-y: auto;  
 }
+#boardDiv {
 
+}
+.replyTable{
+	width: 80%;
+	text-align: left;
+}
+.replyTable th td{
+	text-align: left;
+}
 </style>
 <script type="text/javascript">
 	$(function() {
@@ -117,12 +127,88 @@
 			var type = $(this).attr('type');
 			var boardnum = $(this).attr('boardnum');
 			
-			location.href = '../board/delete?boardnum='+boardnum+'&groupnum='+${group.groupnum};
+			if(type == 'delete'){
+				location.href = '../board/delete?boardnum='+boardnum+'&groupnum='+${group.groupnum};
+			}else if(type == 'update'){		
+				 $.ajax({
+					url:'../board/updateForm',
+					type : 'get',
+					data : {
+						boardnum : boardnum
+					},
+					success : function(result){
+						$('.updateDiv').html('');
+						$("#updateDiv"+boardnum).html(result);
+					},
+					error : function(err){
+						console.log(err);
+					}
+				}); 
+			}
 		});
 		
+		
+		$('.sendReply').on('click',function(){
+			var boardnum =  $(this).attr('boardnum');
+			var text = $('#reply'+boardnum).val();
+			if(text.length ==0){
+				alert('내용을 입력하세요!');
+				return;
+			}
+			$('#replySend'+boardnum).submit();
+		})
+		
+		$('.deleteReply').on('click',function(){
+			var replynum = $(this).attr('replynum');
+			location.href = '../board/deleteReply?replynum='+replynum+'&groupnum='+${group.groupnum};
+		});
+		
+		$('.updateReply').on('click',function(){
+			var replynum = $(this).attr('replynum');
+			var text = $(this).next().next().val();
+			var groupnum = $(this).next().next().attr('groupnum');
+			$('.updateDiv').html('');
+
+			var str = '';
+	  		str += '<form action="../board/updateReply" method="post">';
+	  		str += '<input type="hidden" name="groupnum" value="'+groupnum+'">';
+	  		str += '<input type="hidden" name="replynum" value="'+replynum+'">';
+			str += '<div class="mdl-textfield mdl-js-textfield">';
+			str += '<input class="mdl-textfield__input" type="text" name="text" id="update'+replynum+'" value="'+text+'">';
+			str += '<label class="mdl-textfield__label" for="update'+replynum+'">글입력</label>';
+			str += '</div>';
+			str += '<input type="submit" value="수정" class="mdl-button mdl-js-button mdl-button--primary">';
+			str += '</form>';
+			$(this).next().html(str);
+		});
+		
+		var page = 1;
+		 $(window).scroll(function(){
+			if($(window).scrollTop() == $(document).height() - $(window).height()){
+				page++;
+				/* $.ajax({
+					url : '../board/scrollBoard',
+					type : 'get',
+					dateType : 'json',
+					data : {
+						page : page
+					},
+					success : function(list){
+						
+					}
+					
+				}) */
+				
+				$("#boardDiv").append("sfdsafasdfsa");
+			}
+		}); 
 	});
+	
 </script>
 </head>
+<form action="../board/updateReply" method="post">
+
+</form>
 <body>
 	<div class="topMenu">
 		<jsp:include page="../topMenu.jsp"></jsp:include>
@@ -144,7 +230,7 @@
 		</div>
 		<hr>
 		<c:if test="${sessionScope.id == group.master }">
-			<p>그룹 설정 바꾸기2</p>
+			<p>그룹 설정 바꾸기1</p>
 			<br>
 		</c:if>
 		<c:choose>
@@ -168,7 +254,6 @@
 
 	</div>
 	<!-- 사이드바 end -->
-
 	<div id="mainDiv" class="mainDiv">
 		<c:choose>
 			<c:when test="${member eq 'unknown' }">
@@ -198,7 +283,7 @@
 				<br>
 				<div id="boardDiv">
 					<c:forEach items="${boardList }" var="board">
-						<div class="writeDiv">
+						 <div class="writeDiv">
 							<div class="demo-card-wide mdl-card mdl-shadow--2dp"
 								class="writeCard">
 
@@ -210,7 +295,40 @@
 									<pre>${board.content }</pre>
 								</div>
 								<div class="mdl-card__actions mdl-card--border">
-									<h5>댓글</h5>
+									<form action="../board/insertReply" method="post" id="replySend${board.boardnum }">
+										<input type="hidden" name="groupnum" value="${board.groupnum }">
+										<input type="hidden" name="boardnum" value="${board.boardnum }">
+										<input type="hidden" name="id" value="${sessionScope.id }">
+										<div class="mdl-textfield mdl-js-textfield">
+	    									<input class="mdl-textfield__input" type="text" id="reply${board.boardnum }" name="text">
+	   										<label class="mdl-textfield__label" for="reply${board.boardnum }">댓글을 입력하세요.</label>
+	  									</div>
+	   									<input type="button" value="입력" class="mdl-button mdl-js-button mdl-button--primary sendReply" boardnum="${board.boardnum }">
+  									</form>
+  									<div class="replyShowDiv">
+  										<table class="mdl-data-table mdl-js-data-table replyTable">
+  										<c:forEach items="${board.replyList }" var="reply">
+ 												<c:if test="${reply.boardnum == board.boardnum }">	
+	  												<tr>
+	  													<th>
+	  														${reply.id }
+	  													</th>
+	  													<td>
+	  													 	${reply.text } 
+	  													 	<c:if test="${reply.id == sessionScope.id }">
+		  													 	<input type="button" value="삭제" class="deleteReply" replynum="${reply.replynum }">
+		  													 	<input type="button" value="수정" class="updateReply" replynum="${reply.replynum }">		  					
+		  													 	<div class="updateDiv">
+		  													 	</div>
+		  													 	<input type="hidden" value="${reply.text }" groupnum = "${group.groupnum }">
+	  													 	</c:if>
+	  													</td>
+	  									
+	  												</tr>
+  												</c:if>
+  										</c:forEach>
+  										</table>
+  									</div>
 								</div>
 								<div class="mdl-card__menu">
 									<button id="${board.boardnum }"
@@ -223,7 +341,7 @@
 										for="${board.boardnum }">
 										<c:choose>
 											<c:when test="${sessionScope.id eq board.id }">
-												<li class="mdl-menu__item" type="update" boardnum="${board.boardnum }">수정</li>
+												<li class="mdl-menu__item" type="update" boardnum="${board.boardnum }">수정</li> 
 												<li class="mdl-menu__item" type="delete" boardnum="${board.boardnum }">삭제</li>
 											</c:when>
 											<c:otherwise>
@@ -235,9 +353,11 @@
 								</div>
 							</div>
 						</div>
-						<br><br>
+						<br>
+						<div id="updateDiv${board.boardnum }" class="updateDiv"></div>
+						<br> 
 					</c:forEach>
-				</div>
+				</div> 
 			</c:otherwise>
 		</c:choose>
 
