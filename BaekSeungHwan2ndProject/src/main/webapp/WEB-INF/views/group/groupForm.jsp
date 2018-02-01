@@ -21,7 +21,6 @@
 	z-index: 99;
 }
 
-
 #sidebanner {
 	position: fixed;
 	margin-right: 500px;
@@ -78,7 +77,6 @@
 	margin-left: 30%;
 	padding-top: 80px;
 	width: 90%;
-	
 }
 
 .btnText {
@@ -96,30 +94,31 @@
 	min-height: 100px;
 	height: 10%
 }
-body{
-	overflow-x : hidden;
-	overflow-y: auto;  
-}
-#boardDiv {
 
+body {
+	overflow-x: hidden;
+	overflow-y: auto;
 }
-.replyTable{
+
+#boardDiv {
+	
+}
+
+.replyTable {
 	width: 80%;
 	text-align: left;
 }
-.replyTable th td{
+
+.replyTable th td {
 	text-align: left;
 }
 </style>
 <script type="text/javascript">
 	$(function() {
 		$('#joinGroup').on('click', function() {
+			var groupnum = $('#thisGroupnum').val();
 			if (confirm('가입하시겠습니까?')) {
-				location.href = 'groupAddUser?groupnum=' + $
-				{
-					group.groupnum
-				}
-				;
+				location.href = 'groupAddUser?groupnum=' + groupnum;
 			}
 		});
 		
@@ -185,31 +184,88 @@ body{
 		var page = 1;
 		 $(window).scroll(function(){
 			if($(window).scrollTop() == $(document).height() - $(window).height()){
+				var groupnum = $('#thisGroupnum').val();
+				var sessionId = $('#sessionId').val();
 				page++;
-				/* $.ajax({
+				 $.ajax({
 					url : '../board/scrollBoard',
 					type : 'get',
 					dateType : 'json',
 					data : {
+						groupnum : groupnum,
 						page : page
 					},
 					success : function(list){
-						
+						var str = '';
+						$.each(list, function(index, item){
+							str += '<div class="writeDiv">';
+							str += '<div class="demo-card-wide mdl-card mdl-shadow--2dp" class="writeCard">';
+							str += '<div class="mdl-card__supporting-text">';
+							str += '<p>ID '+item.id+'</p>';
+							if(item.savedfile != null){
+								str += '<img alt="" src="../board/download?boardnum='+item.boardnum+'">';
+							}
+							str +=	'<pre>'+item.content+'</pre></div>';
+							str += '<div class="mdl-card__actions mdl-card--border">';
+							str += '<form action="../board/insertReply" method="post" id="replySend'+item.boardnum+'">';
+							str += '<input type="hidden" name="groupnum" value="'+item.groupnum+'">';
+							str += '<input type="hidden" name="boardnum" value="'+item.boardnum+'">';
+							str += '<input type="hidden" name="id" value="${sessionScope.id }">';
+							str += '<div class="mdl-textfield mdl-js-textfield">';
+							str += '<input class="mdl-textfield__input" type="text"'+
+								'id="reply'+item.boardnum+'" name="text"> <label'+
+								'class="mdl-textfield__label" for="reply'+item.boardnum+'">댓글을'+
+								'입력하세요.</label>'+
+								'</div>'+
+								'<input type="button" value="입력" class="mdl-button mdl-js-button mdl-button--primary sendReply"'+
+								'boardnum="${board.boardnum }">'+ 
+								'</form>';
+							str += '<div class="replyShowDiv">';
+							str += '<table class="mdl-data-table mdl-js-data-table replyTable">';
+							$.each(list.replyList, function(index, reply){
+								if(reply.boardnum == item.boardnum){
+									str += '<tr><th>'+reply.id+'</th>';
+									str += reply.text;
+									if(reply.id == sessionId){
+										str += '<input type="button" value="삭제" class="deleteReply" replynum="'+reply.replynum+'">';
+										str += '<input type="button" value="수정" class="updateReply" replynum="'+reply.replynum+'">';
+										str += '<div class="updateDiv"></div>';
+										str += '<input type="hidden" value="'+reply.text+'" groupnum="'+item.groupnum+'">';
+										
+									}
+									str += '</td></tr>';
+								}
+							}); 
+							str += '</table></div></div>';
+							str += '<div class="mdl-card__menu">';
+							str += '<button id="'+item.boardnum+'" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">';
+							str += '<i class="material-icons">more_vert</i>';
+							str += '</button>';
+							str += '<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="'+item.boardnum+'">';
+							if(sessionId == item.id){
+								str += '<li class="mdl-menu__item" type="update" boardnum="'+item.boardnum+'">수정</li>';
+								str += '<li class="mdl-menu__item" type="delete" boardnum="'+item.boardnum+'">삭제</li>';
+							}else{
+								str += '<li disabled class="mdl-menu__item">수정</li>'+
+									'<li disabled class="mdl-menu__item">삭제</li>';
+							}
+							str += '</ul></div></div></div><br>';
+							str += '<div id="updateDiv${board.boardnum }" class="updateDiv"></div><br>';
+						}); 
+						$("#boardDiv").append(str);
 					}
-					
-				}) */
+				}); 
 				
-				$("#boardDiv").append("sfdsafasdfsa");
 			}
 		}); 
 	});
 	
 </script>
 </head>
-<form action="../board/updateReply" method="post">
-
-</form>
+<form action="../board/updateReply" method="post"></form>
 <body>
+	<input type="hidden" value="${group.groupnum }" id="thisGroupnum">
+	<input type="hidden" value="${sessionScope.id }" id="sessionId">
 	<div class="topMenu">
 		<jsp:include page="../topMenu.jsp"></jsp:include>
 	</div>
@@ -283,52 +339,58 @@ body{
 				<br>
 				<div id="boardDiv">
 					<c:forEach items="${boardList }" var="board">
-						 <div class="writeDiv">
+						<div class="writeDiv">
 							<div class="demo-card-wide mdl-card mdl-shadow--2dp"
 								class="writeCard">
 
 								<div class="mdl-card__supporting-text">
 									<p>ID ${board.id }</p>
 									<c:if test="${board.savedfile !=null }">
-										<img alt="" src="../board/download?boardnum=${board.boardnum }">
-									</c:if> 
+										<img alt=""
+											src="../board/download?boardnum=${board.boardnum }">
+									</c:if>
 									<pre>${board.content }</pre>
 								</div>
 								<div class="mdl-card__actions mdl-card--border">
-									<form action="../board/insertReply" method="post" id="replySend${board.boardnum }">
-										<input type="hidden" name="groupnum" value="${board.groupnum }">
-										<input type="hidden" name="boardnum" value="${board.boardnum }">
-										<input type="hidden" name="id" value="${sessionScope.id }">
+									<form action="../board/insertReply" method="post"
+										id="replySend${board.boardnum }">
+										<input type="hidden" name="groupnum"
+											value="${board.groupnum }"> <input type="hidden"
+											name="boardnum" value="${board.boardnum }"> <input
+											type="hidden" name="id" value="${sessionScope.id }">
 										<div class="mdl-textfield mdl-js-textfield">
-	    									<input class="mdl-textfield__input" type="text" id="reply${board.boardnum }" name="text">
-	   										<label class="mdl-textfield__label" for="reply${board.boardnum }">댓글을 입력하세요.</label>
-	  									</div>
-	   									<input type="button" value="입력" class="mdl-button mdl-js-button mdl-button--primary sendReply" boardnum="${board.boardnum }">
-  									</form>
-  									<div class="replyShowDiv">
-  										<table class="mdl-data-table mdl-js-data-table replyTable">
-  										<c:forEach items="${board.replyList }" var="reply">
- 												<c:if test="${reply.boardnum == board.boardnum }">	
-	  												<tr>
-	  													<th>
-	  														${reply.id }
-	  													</th>
-	  													<td>
-	  													 	${reply.text } 
-	  													 	<c:if test="${reply.id == sessionScope.id }">
-		  													 	<input type="button" value="삭제" class="deleteReply" replynum="${reply.replynum }">
-		  													 	<input type="button" value="수정" class="updateReply" replynum="${reply.replynum }">		  					
-		  													 	<div class="updateDiv">
-		  													 	</div>
-		  													 	<input type="hidden" value="${reply.text }" groupnum = "${group.groupnum }">
-	  													 	</c:if>
-	  													</td>
-	  									
-	  												</tr>
-  												</c:if>
-  										</c:forEach>
-  										</table>
-  									</div>
+											<input class="mdl-textfield__input" type="text"
+												id="reply${board.boardnum }" name="text"> <label
+												class="mdl-textfield__label" for="reply${board.boardnum }">댓글을
+												입력하세요.</label>
+										</div>
+										<input type="button" value="입력"
+											class="mdl-button mdl-js-button mdl-button--primary sendReply"
+											boardnum="${board.boardnum }">
+									</form>
+									<div class="replyShowDiv">
+										<table class="mdl-data-table mdl-js-data-table replyTable">
+											<c:forEach items="${board.replyList }" var="reply">
+												<c:if test="${reply.boardnum == board.boardnum }">
+													<tr>
+														<th>${reply.id }</th>
+														<td>${reply.text }<c:if
+																test="${reply.id == sessionScope.id }">
+																<input type="button" value="삭제" class="deleteReply"
+																	replynum="${reply.replynum }">
+																<input type="button" value="수정" class="updateReply"
+																	replynum="${reply.replynum }">
+																<div class="updateDiv"></div>
+																<input type="hidden" value="${reply.text }"
+																	groupnum="${group.groupnum }">
+															</c:if>
+														</td>
+
+													</tr>
+												</c:if>
+											</c:forEach>
+										</table>
+									</div>
 								</div>
 								<div class="mdl-card__menu">
 									<button id="${board.boardnum }"
@@ -341,8 +403,10 @@ body{
 										for="${board.boardnum }">
 										<c:choose>
 											<c:when test="${sessionScope.id eq board.id }">
-												<li class="mdl-menu__item" type="update" boardnum="${board.boardnum }">수정</li> 
-												<li class="mdl-menu__item" type="delete" boardnum="${board.boardnum }">삭제</li>
+												<li class="mdl-menu__item" type="update"
+													boardnum="${board.boardnum }">수정</li>
+												<li class="mdl-menu__item" type="delete"
+													boardnum="${board.boardnum }">삭제</li>
 											</c:when>
 											<c:otherwise>
 												<li disabled class="mdl-menu__item">수정</li>
@@ -355,9 +419,9 @@ body{
 						</div>
 						<br>
 						<div id="updateDiv${board.boardnum }" class="updateDiv"></div>
-						<br> 
+						<br>
 					</c:forEach>
-				</div> 
+				</div>
 			</c:otherwise>
 		</c:choose>
 

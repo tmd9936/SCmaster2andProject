@@ -113,6 +113,10 @@ table{
 			alert('비밀번호가 다릅니다.');
 			return false;
 		}
+		if(!/^[a-zA-Z0-9]{6,15}$/.test(password)){
+			aler('6~15자리의 영문과 숫자조합으로 쓰세요!');
+			return false;
+		}
 
 		if (name.value == "") {
 			alert('이름을 입력하세요');

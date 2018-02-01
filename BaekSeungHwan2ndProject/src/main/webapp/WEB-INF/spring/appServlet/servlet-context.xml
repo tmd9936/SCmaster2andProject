@@ -30,7 +30,6 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 		<mvc:mapping path="/user/logout"/>
-		<mvc:mapping path="/user/insertUser"/>
 		<mvc:mapping path="/user/infoForm"/>
 		<mvc:mapping path="/user/update"/>
 		<mvc:mapping path="/group/make"/>
@@ -44,7 +43,6 @@
 		<mvc:mapping path="/board/deleteReply"/>
 		<mvc:mapping path="/board/updateReply"/>
 		<beans:ref bean="LoginInterceptor"/>
-		
 		</mvc:interceptor>
 	</mvc:interceptors>
 	

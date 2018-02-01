@@ -27,7 +27,7 @@ img{
 	<div>
 		<span class="mdl-layout-title"> 
 			<a href="/web1">
-					<img alt="홈아이콘" src="<c:url value="/resources/img/homeico.PNG"></c:url>">						
+					<img alt="홈아이콘" src="<c:url value="/resources/img/homeico.png"></c:url>">						
 				</a>
 		</span>	
 	</div>

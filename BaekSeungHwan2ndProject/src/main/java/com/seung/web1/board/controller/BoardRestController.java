@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -186,6 +188,26 @@ public class BoardRestController {
 		logger.info("리플 업데이트 종료"); 
 		return "redirect:../group/groupForm";
 		
+	}
+	
+	//scrollBoard
+	//List<HashMap<String, Object>> boardList =  boardDAO.boardList(groupnum);
+	
+	@ResponseBody
+	@RequestMapping(value="scrollBoard", method=RequestMethod.GET)
+	public List<HashMap<String, Object>> scrollBoard(int page, int groupnum){
+		logger.info("스크롤링 시작");
+
+		List<HashMap<String, Object>> allBoardList =  dao.boardList(groupnum);
+		int mincount = (page-1)*4;
+		int maxcount = page*4;
+		if(allBoardList.size()-1 < maxcount) {
+			maxcount = allBoardList.size()-1;
+		}
+		List<HashMap<String, Object>> boardList = allBoardList.subList(mincount, maxcount);
+		
+		logger.info("스크롤링 종료");
+		return boardList;
 	}
 	
 	public void uploadFile(MultipartFile upload,Board board){

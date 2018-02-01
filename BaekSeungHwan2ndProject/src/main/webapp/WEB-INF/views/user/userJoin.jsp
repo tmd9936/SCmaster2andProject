@@ -63,9 +63,17 @@ body {
 			var pass2 = $('#password2').val();
 			
 			if(pass1.length == 0 || pass2.length == 0){
+				passcheck = false;
 				$('#passwordText2').html('<p>패스워드를 입력하세요 !</p>');
 				return;
 			}
+			
+			if(!/^[a-zA-Z0-9]{6,15}$/.test(pass1)){
+				passcheck = false;
+				$('#passwordText2').html('<p>비밀번호는 영문과 숫자 조합으로 6~15자리 입니다.</p>');
+				return;
+			}
+
 			
 			if(pass1 != pass2){
 				passcheck = false;
@@ -82,6 +90,12 @@ body {
 			
 			if(pass1.length == 0 || pass2.length == 0){
 				$('#passwordText2').html('<p>패스워드를 입력하세요 !</p>');
+				return;
+			}
+			
+			if(!/^[a-zA-Z0-9]{6,15}$/.test(pass1)){
+				passcheck = false;
+				$('#passwordText2').html('<p>비밀번호는 영문과 숫자 조합으로 6~15자리 입니다.</p>');
 				return;
 			}
 			
@@ -112,9 +126,17 @@ body {
 		
 		$('#id').on('focusout',function(){
 			var id = $('#id').val();
+			var regType1 = /^[A-Za-z0-9+]{4,12}$/; 
+
 			if(id.length == 0){
 				idcheck = false;
 				$('#idText').html('<p>아이디를 입력하세요!</p>');
+				return;
+			}
+			
+			if(!regType1.test(id)){
+				idcheck = false;
+				$('#idText').html('<p>4~12자의 숫자와 영문만 입력하세요!</p>');
 				return;
 			}
 			
